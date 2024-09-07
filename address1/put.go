@@ -17,7 +17,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 	}
 	// TODO : put entries
 	if !status.OK() {
-		e.Handle(status, core.RequestId(h))
+		e.Handle(status.WithRequestId(h))
 	}
 	return
 }

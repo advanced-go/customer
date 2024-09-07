@@ -5,6 +5,7 @@ import (
 	http2 "github.com/advanced-go/customer/http"
 	"github.com/advanced-go/customer/testrsc"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/core/coretest"
 	httpt "github.com/advanced-go/stdlib/httpx/httpxtest"
 	"net/http"
 	"reflect"
@@ -18,27 +19,28 @@ func TestExchange1(t *testing.T) {
 		resp   *http.Response
 		status *core.Status
 	}{
-		//{name: "read-request-error", req: readRequest("", t), resp: readResponse(testrsc.TS1GetRespURL, t), status: core.StatusOK()},
-		{name: "get-entry", req: httpt.NewRequestTest(testrsc.TS1GetReqURL, t), resp: httpt.NewResponseTest(testrsc.TS1GetRespURL, t), status: core.StatusOK()},
+		{name: "get-error-header", req: httpt.NewRequestTest(testrsc.Addr1GetReqErrHeaderURL, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespURL, t), status: core.StatusOK()},
+		{name: "get-error-content", req: httpt.NewRequestTest(testrsc.Addr1GetReqURL, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespErrContextURL, t), status: core.StatusOK()},
+		{name: "get-entry", req: httpt.NewRequestTest(testrsc.Addr1GetReqURL, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespURL, t), status: core.StatusOK()},
 	}
 	for _, tt := range tests {
-		success := true
+		ok := true
 		t.Run(tt.name, func(t *testing.T) {
 			resp, status := http2.Exchange(tt.req)
 			if tt.status != nil && status.Code != tt.status.Code {
 				t.Errorf("Exchange() got status : %v, want status : %v, error : %v", status.Code, tt.status.Code, status.Err)
-				success = false
+				ok = false
 			}
-			if success && resp.StatusCode != tt.resp.StatusCode {
+			if ok && resp.StatusCode != tt.resp.StatusCode {
 				t.Errorf("Exchange() got status code : %v, want status code : %v", resp.StatusCode, tt.resp.StatusCode)
-				success = false
+				ok = false
 			}
 			var gotT []address1.Entry
 			var wantT []address1.Entry
-			if success {
-				gotT, wantT, success = httpt.Deserialize[[]address1.Entry](resp.Body, tt.resp.Body, t)
+			if ok {
+				gotT, wantT, ok = httpt.Deserialize[coretest.Output, []address1.Entry](resp.Body, tt.resp.Body, t)
 			}
-			if success {
+			if ok {
 				if !reflect.DeepEqual(gotT, wantT) {
 					t.Errorf("Exchange() got = %v, want %v", gotT, wantT)
 				}

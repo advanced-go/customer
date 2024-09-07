@@ -19,4 +19,7 @@ const (
 
 	Addr1GetReqURL  = Addr1BasePath + "/get-req.txt"
 	Addr1GetRespURL = Addr1BasePath + "/get-resp.txt"
+
+	Addr1GetReqErrHeaderURL   = Addr1BasePath + "/get-req-error-header.txt"
+	Addr1GetRespErrContextURL = Addr1BasePath + "/get-resp-error-content.txt"
 )

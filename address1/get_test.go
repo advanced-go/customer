@@ -4,24 +4,20 @@ import (
 	"fmt"
 	"github.com/advanced-go/customer/testrsc"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/uri"
 	"net/url"
 )
 
 func ExampleGet() {
-	ex := core.NewExchangeOverride("", testrsc.Addr1EntryURL, "")
-	ctx := core.NewExchangeOverrideContext(nil, ex)
 	values := make(url.Values)
+	values.Add(CustomerKey, "C001")
+	path := uri.BuildPath(UpstreamPath, values)
+	h := uri.AddContentLocation(nil, path, testrsc.Addr1GetRespURL)
 
-	values.Add(core.RegionKey, "us-west")
-	entries, _, status := get[core.Output](ctx, nil, values)
-	fmt.Printf("test: get() -> [status:%v] [entries:%v]\n", status, len(entries))
-
-	values.Add(core.SubZoneKey, "dc1")
-	entries, _, status = get[core.Output](ctx, nil, values)
-	fmt.Printf("test: get() -> [status:%v] [entries:%v]\n", status, len(entries))
+	entries, _, status := get[core.Output](nil, h, values)
+	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
 
 	//Output:
-	//test: get() -> [status:OK] [entries:2]
 	//test: get() -> [status:OK] [entries:1]
 
 }

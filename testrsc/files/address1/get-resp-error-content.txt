@@ -6,11 +6,19 @@ Connection: Closed
 
 [
   {
-    "customer-id": "C001",
+    "customer-id": "C001"
     "address-1":"1514 Cedar Ridge Road",
     "city":"Vinton",
     "state":"IA",
     "postal-code":"52349",
     "email":"before-email@hotmail.com"
-   }
- ]
+   },
+  {
+    "customer-id": "C002",
+    "address-1":"5494 Lakeview Drive",
+    "city":"Clear Lake",
+    "state":"IA",
+    "postal-code":"50428",
+    "email":"before-email2@yahoo.com"
+  }
+]

@@ -9,10 +9,10 @@ type Entry struct {
 	CustomerId string    `json:"customer-id"`
 	CreatedTS  time.Time `json:"created-ts"`
 
-	AddressLine1 string `json:"region"`
-	AddressLine2 string `json:"zone"`
-	City         string `json:"sub-zone"`
-	State        string `json:"host"`
-	PostalCode   string `json:"instance-id"`
+	AddressLine1 string `json:"address-1"`
+	AddressLine2 string `json:"address-2"`
+	City         string `json:"city"`
+	State        string `json:"state"`
+	PostalCode   string `json:"postal-code"`
 	Email        string `json:"email"`
 }
