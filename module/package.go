@@ -6,4 +6,5 @@ const (
 	Ver1            = "v1"
 	Ver2            = "v2"
 	AddressResource = "address"
+	AddressRoute    = "cust-address"
 )

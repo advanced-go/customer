@@ -3,6 +3,7 @@ package http
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/customer/address1"
 	"github.com/advanced-go/customer/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -16,7 +17,7 @@ var (
 )
 
 // Exchange - HTTP exchange function
-func Exchange(r *http.Request) (*http.Response, *core.Status) {
+func Exchange(r *http.Request) (resp *http.Response, result *core.Status) {
 	h2 := make(http.Header)
 	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 
@@ -26,13 +27,15 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	}
 	p, status := httpx.ValidateURL(r.URL, module.Authority)
 	if !status.OK() {
-		resp, _ := httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
-		return resp, status
+		resp1, _ := httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		return resp1, status
 	}
 	core.AddRequestId(r.Header)
 	switch p.Resource {
 	case module.AddressResource:
-		return addressExchange[core.Log](r, p)
+		resp, result = addressExchange[core.Log](r, p)
+		resp.Header.Add(core.XRoute, address1.Route)
+		return resp, status
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
