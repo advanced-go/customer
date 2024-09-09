@@ -19,9 +19,9 @@ func TestExchange1(t *testing.T) {
 		resp   *http.Response
 		status *core.Status
 	}{
-		{name: "get-error-header", req: httpt.NewRequestTest(testrsc.Addr1GetReqErrHeaderURL, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespURL, t), status: core.StatusOK()},
-		{name: "get-error-content", req: httpt.NewRequestTest(testrsc.Addr1GetReqURL, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespErrContextURL, t), status: core.StatusOK()},
-		{name: "get-entry", req: httpt.NewRequestTest(testrsc.Addr1GetReqURL, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespURL, t), status: core.StatusOK()},
+		{name: "get-error-header", req: httpt.NewRequestTest(testrsc.Addr1GetReqErrHeader, t), resp: httpt.NewResponseTest(testrsc.Addr1GetResp, t), status: core.StatusOK()},
+		{name: "get-error-content", req: httpt.NewRequestTest(testrsc.Addr1GetReq, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespErrContent, t), status: core.StatusOK()},
+		{name: "get-entry", req: httpt.NewRequestTest(testrsc.Addr1GetReq, t), resp: httpt.NewResponseTest(testrsc.Addr1GetResp, t), status: core.StatusOK()},
 	}
 	for _, tt := range tests {
 		ok := true

@@ -1,7 +1,6 @@
 package http
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/advanced-go/customer/address1"
@@ -10,7 +9,6 @@ import (
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/uri"
 	"net/http"
-	"net/url"
 )
 
 func addressExchange[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (*http.Response, *core.Status) {
@@ -27,26 +25,26 @@ func addressExchange[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (*http
 
 	switch r.Method {
 	case http.MethodGet:
-		return addressGet[E](r.Context(), r.Header, r.URL, p.Version)
+		return addressGet[E](r, p)
 	case http.MethodPut:
-		return addressPut[E](r, p.Version)
+		return addressPut[E](r, p)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
 		return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 	}
 }
 
-func addressGet[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
+func addressGet[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (resp *http.Response, status *core.Status) {
 	var entries any
 	var h2 http.Header
 
-	switch version {
+	switch p.Version {
 	case module.Ver1, "":
-		entries, h2, status = address1.Get(ctx, h, url.Query())
-	case module.Ver2:
-		//entries, h2, status = timeseries2.Get(ctx, h, url.Query())
+		entries, h2, status = address1.Get(r, p.Path)
+	//case module.Ver2:
+	//entries, h2, status = timeseries2.Get(ctx, h, url.Query())
 	default:
-		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
+		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
 	}
 	if h2 == nil {
 		h2 = make(http.Header)
@@ -61,14 +59,14 @@ func addressGet[E core.ErrorHandler](ctx context.Context, h http.Header, url *ur
 
 }
 
-func addressPut[E core.ErrorHandler](r *http.Request, version string) (resp *http.Response, status *core.Status) {
+func addressPut[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (resp *http.Response, status *core.Status) {
 	var h2 http.Header
 
-	switch version {
+	switch p.Version {
 	case module.Ver1, "":
-		h2, status = address1.Put(r, nil)
-	case module.Ver2:
-	//	h2, status = timeseries2.Put(r, nil)
+		h2, status = address1.Put(r, p.Path, nil)
+	//case module.Ver2:
+	//	h2, status = address2.Put(r, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
 	}

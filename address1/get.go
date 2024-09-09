@@ -2,12 +2,21 @@ package address1
 
 import (
 	"context"
+	"github.com/advanced-go/customer/testrsc"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 	"net/url"
 )
+
+func testOverride(h http.Header) http.Header {
+	if h != nil && h.Get(uri.XContentLocationResolver) != "" {
+		return h
+	}
+	return httpx.SetHeader(h, uri.XContentLocationResolver, testrsc.Addr1GetRespTest)
+}
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
 	var e E
@@ -18,8 +27,11 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	url := Url("localhost:8082", UpstreamPath, values, h)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	// Test only
+	h = testOverride(h)
+
+	u := AddressStorage("localhost:8082", UpstreamPath, values, h)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return nil, h2, core.NewStatusError(core.StatusInvalidArgument, err)
 	}
@@ -43,7 +55,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 }
 
 func filter(entries []Entry, values url.Values) (result []Entry) {
-	customer := values.Get("customer")
+	customer := values.Get(CustomerKey)
 	for _, e := range entries {
 		if customer != "" && customer != e.CustomerId {
 			continue

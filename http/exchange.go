@@ -17,7 +17,7 @@ var (
 )
 
 // Exchange - HTTP exchange function
-func Exchange(r *http.Request) (resp *http.Response, result *core.Status) {
+func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	h2 := make(http.Header)
 	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 
@@ -27,15 +27,15 @@ func Exchange(r *http.Request) (resp *http.Response, result *core.Status) {
 	}
 	p, status := httpx.ValidateURL(r.URL, module.Authority)
 	if !status.OK() {
-		resp1, _ := httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
-		return resp1, status
+		resp, _ := httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		return resp, status
 	}
 	core.AddRequestId(r.Header)
 	switch p.Resource {
 	case module.AddressResource:
-		resp, result = addressExchange[core.Log](r, p)
+		resp, status1 := addressExchange[core.Log](r, p)
 		resp.Header.Add(core.XRoute, address1.Route)
-		return resp, status
+		return resp, status1
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
