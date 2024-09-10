@@ -14,4 +14,6 @@ const (
 
 	Addr1GetReqErrHeader   = Addr1BasePath + "/get-req-error-header.txt"
 	Addr1GetRespErrContent = Addr1BasePath + "/get-resp-error-content.txt"
+
+	Addr1PutRespFailure = Addr1BasePath + "/put-resp-failure.txt"
 )

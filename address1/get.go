@@ -24,14 +24,11 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	if values == nil {
 		return nil, h2, core.StatusNotFound()
 	}
-	if ctx == nil {
-		ctx = context.Background()
-	}
 	// Test only
 	h = testOverride(h)
 
 	u := AddressStorage("localhost:8082", UpstreamPath, values, h)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 	if err != nil {
 		return nil, h2, core.NewStatusError(core.StatusInvalidArgument, err)
 	}
@@ -56,8 +53,16 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 
 func filter(entries []Entry, values url.Values) (result []Entry) {
 	customer := values.Get(CustomerKey)
+	state := values.Get(StateKey)
 	for _, e := range entries {
+		if customer == "*" {
+			result = append(result, e)
+			continue
+		}
 		if customer != "" && customer != e.CustomerId {
+			continue
+		}
+		if state != "" && state != e.State {
 			continue
 		}
 		result = append(result, e)

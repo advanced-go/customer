@@ -13,6 +13,7 @@ const (
 	PkgPath      = "github/advanced-go/customer/address1"
 	UpstreamPath = "storage/address"
 	CustomerKey  = "customer"
+	StateKey     = "state"
 	Route        = "customer-address"
 )
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 )
 
@@ -15,9 +16,15 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 		status = core.NewStatusError(core.StatusInvalidContent, errors.New("error: no entries found"))
 		return nil, status
 	}
-	// TODO : put entries
+	u := AddressStorage("localhost:8082", UpstreamPath, nil, h)
+	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
+	if err != nil {
+		return h2, core.NewStatusError(core.StatusInvalidArgument, err)
+	}
+	_, status = httpx.Exchange(req)
 	if !status.OK() {
 		e.Handle(status.WithRequestId(h))
+
 	}
 	return
 }
