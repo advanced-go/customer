@@ -34,7 +34,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	switch p.Resource {
 	case module.AddressResource:
 		resp, status1 := addressExchange[core.Log](r, p)
-		resp.Header.Add(core.XRoute, address1.Route)
+		resp.Header.Add(core.XRoute, address1.StorageRoute)
 		return resp, status1
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
