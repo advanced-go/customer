@@ -10,8 +10,8 @@ import (
 
 func ExampleGet_Customer() {
 	values := make(url.Values)
-	values.Add(CustomerKey, "C001")
-	path := uri.BuildPath(UpstreamPath, values)
+	values.Add(customerKey, "C001")
+	path := uri.BuildPath("", StoragePath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
 	entries, _, status := get[core.Output](nil, h, values)
@@ -24,8 +24,8 @@ func ExampleGet_Customer() {
 
 func ExampleGet_Customer_All() {
 	values := make(url.Values)
-	values.Add(CustomerKey, "*")
-	path := uri.BuildPath(UpstreamPath, values)
+	values.Add(customerKey, "*")
+	path := uri.BuildPath("", StoragePath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
 	entries, _, status := get[core.Output](nil, h, values)
@@ -38,8 +38,8 @@ func ExampleGet_Customer_All() {
 
 func ExampleGet_State() {
 	values := make(url.Values)
-	values.Add(StateKey, "IA")
-	path := uri.BuildPath(UpstreamPath, values)
+	values.Add(stateKey, "IA")
+	path := uri.BuildPath("", StoragePath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
 	entries, _, status := get[core.Output](nil, h, values)

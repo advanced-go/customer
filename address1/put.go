@@ -16,7 +16,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 		status = core.NewStatusError(core.StatusInvalidContent, errors.New("error: no entries found"))
 		return nil, status
 	}
-	u := AddressStorage("localhost:8082", UpstreamPath, nil, h)
+	u := resolver.Url(StorageHost, "", StoragePath, nil, h)
 	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 	if err != nil {
 		return h2, core.NewStatusError(core.StatusInvalidArgument, err)

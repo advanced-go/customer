@@ -11,6 +11,11 @@ import (
 	"net/url"
 )
 
+const (
+	customerKey = "customer"
+	stateKey    = "state"
+)
+
 func testOverride(h http.Header) http.Header {
 	if h != nil && h.Get(uri.XContentLocationResolver) != "" {
 		return h
@@ -27,7 +32,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	// Test only
 	h = testOverride(h)
 
-	u := AddressStorage("localhost:8082", UpstreamPath, values, h)
+	u := resolver.Url(StorageHost, "", StoragePath, values, h)
 	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 	if err != nil {
 		return nil, h2, core.NewStatusError(core.StatusInvalidArgument, err)
@@ -52,8 +57,8 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 }
 
 func filter(entries []Entry, values url.Values) (result []Entry) {
-	customer := values.Get(CustomerKey)
-	state := values.Get(StateKey)
+	customer := values.Get(customerKey)
+	state := values.Get(stateKey)
 	for _, e := range entries {
 		if customer == "*" {
 			result = append(result, e)

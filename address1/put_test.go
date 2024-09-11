@@ -10,7 +10,7 @@ import (
 
 func ExamplePut() {
 	entries, _ := json.New[[]Entry](testrsc.Addr1Entry, nil)
-	path := uri.BuildPath(UpstreamPath, nil)
+	path := uri.BuildPath("", StoragePath, nil)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1PutRespFailure)
 
 	_, status := put[core.Output](nil, h, entries)
