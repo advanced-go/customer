@@ -26,6 +26,7 @@ func testOverride(h http.Header) http.Header {
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
 	var e E
 
+	h2 = httpx.SetHeader(h2, httpx.ContentType, httpx.ContentTypeText)
 	if values == nil {
 		return nil, h2, core.StatusNotFound()
 	}
@@ -52,6 +53,8 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	}
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
+	} else {
+		h2 = httpx.SetHeader(h2, httpx.ContentType, httpx.ContentTypeJson)
 	}
 	return
 }

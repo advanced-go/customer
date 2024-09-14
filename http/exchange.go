@@ -32,7 +32,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	}
 	core.AddRequestId(r.Header)
 	switch p.Resource {
-	case module.AddressResource:
+	case address:
 		resp, status1 := addressExchange[core.Log](r, p)
 		resp.Header.Add(core.XRoute, address1.StorageRoute)
 		return resp, status1

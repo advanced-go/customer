@@ -19,7 +19,7 @@ func ExampleExchange_Invalid() {
 
 	//Output:
 	//test: Exchange(nil) -> [status:Bad Request] [status-code:400]
-	//test: Exchange(nil) -> [status:Bad Request] [status-code:400]
-	//test: Exchange(nil) -> [status:Bad Request] [status-code:400]
+	//test: Exchange(nil) -> [status:Bad Request [error: invalid URI, authority does not match: "/search" "github/advanced-go/customer"]] [status-code:400]
+	//test: Exchange(nil) -> [status:Bad Request [error: invalid URI, authority does not match: "/github/advanced-go/observation" "github/advanced-go/customer"]] [status-code:400]
 
 }
