@@ -23,12 +23,11 @@ func testOverride(h http.Header) http.Header {
 	return httpx.SetHeader(h, uri.XContentLocationResolver, testrsc.Addr1GetRespTest)
 }
 
-func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
+func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
 	var e E
 
-	h2 = httpx.SetHeader(h2, httpx.ContentType, httpx.ContentTypeText)
 	if values == nil {
-		return nil, h2, core.StatusNotFound()
+		return nil, core.StatusNotFound()
 	}
 	// Test only
 	h = testOverride(h)
@@ -36,17 +35,17 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	u := resolver.Url(StorageHost, "", StoragePath, values, h)
 	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 	if err != nil {
-		return nil, h2, core.NewStatusError(core.StatusInvalidArgument, err)
+		return nil, core.NewStatusError(core.StatusInvalidArgument, err)
 	}
 	resp, status1 := httpx.Exchange(req)
 	if !status1.OK() {
 		e.Handle(status1.WithRequestId(h))
-		return nil, h2, status1
+		return nil, status1
 	}
 	entries, status = json.New[[]Entry](resp, h)
 	if !status.OK() {
 		e.Handle(status.WithRequestId(h))
-		return nil, h2, status
+		return nil, status
 	}
 	if len(values) > 0 {
 		entries = filter(entries, values)
@@ -54,7 +53,6 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
 	} else {
-		h2 = httpx.SetHeader(h2, httpx.ContentType, httpx.ContentTypeJson)
 	}
 	return
 }

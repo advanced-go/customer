@@ -40,9 +40,7 @@ func addressGet[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (resp *http
 
 	switch p.Version {
 	case ver1, "":
-		entries, h2, status = address1.Get(r, p.Path)
-	//case module.Ver2:
-	//entries, h2, status = timeseries2.Get(ctx, h, url.Query())
+		entries, h2, status = address1.Get[core.Log](r, p.Path)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
 	}
@@ -58,7 +56,7 @@ func addressPut[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (resp *http
 
 	switch p.Version {
 	case ver1, "":
-		h2, status = address1.Put(r, p.Path, nil)
+		h2, status = address1.Put[core.Log](r, p.Path, nil)
 	//case module.Ver2:
 	//	h2, status = address2.Put(r, nil)
 	default:
