@@ -23,17 +23,17 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 
 	if r == nil {
 		status := core.NewStatusError(http.StatusBadRequest, errors.New("request is nil"))
-		return httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 	}
 	p, status := httpx.ValidateURL(r.URL, module.Authority)
 	if !status.OK() {
-		resp, _ := httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		resp, _ := httpx.NewResponse(status.HttpCode(), h2, status.Err)
 		return resp, status
 	}
 	core.AddRequestId(r.Header)
 	switch p.Resource {
 	case address:
-		resp, status1 := addressExchange[core.Log](r, p)
+		resp, status1 := addressExchange(r, p)
 		resp.Header.Add(core.XRoute, address1.StorageRoute)
 		return resp, status1
 	case core.VersionPath:
@@ -44,6 +44,6 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewHealthResponseOK(), core.StatusOK()
 	default:
 		status = core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, testresource not found: [%v]", p.Resource)))
-		return httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 	}
 }

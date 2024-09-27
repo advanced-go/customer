@@ -1,12 +1,14 @@
 package address1
 
 import (
+	"context"
 	"errors"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
 	"github.com/advanced-go/stdlib/uri"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -24,14 +26,20 @@ var (
 
 // Get - address1 resource GET
 func Get[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.Header, *core.Status) {
+	if r == nil {
+		status := core.NewStatusError(core.StatusInvalidArgument, errors.New("error: http.Request is"))
+		return nil, nil, status
+	}
+	if r.Header.Get(core.XFrom) == "" {
+		return httpGet[core.Log](r, path)
+	}
+	return httpGet[core.Output](r, path)
+}
+
+func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.Header, *core.Status) {
 	var e E
 
 	h2 := httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeText)
-	if r == nil {
-		status := core.NewStatusError(core.StatusInvalidArgument, errors.New("error: http.Request is"))
-		e.Handle(status)
-		return nil, h2, status
-	}
 	switch path {
 	case addrPath:
 		t, status := get[E](r.Context(), r.Header, r.URL.Query())
@@ -46,16 +54,22 @@ func Get[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.Header
 		return buf, httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeJson), status1
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New("error: resource is not percentile or status code"))
-		e.Handle(status)
 		return nil, h2, status
 	}
 }
 
-// Put - address1 PUT, with optional content override
-func Put[E core.ErrorHandler](r *http.Request, _ string, body []Entry) (http.Header, *core.Status) {
+// Put - log2 PUT, with optional content override
+func Put(r *http.Request, path string, body []Entry) (http.Header, *core.Status) {
 	if r == nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
 	}
+	if r.Header.Get(core.XFrom) == "" {
+		return httpPut[core.Log](r, path, body)
+	}
+	return httpPut[core.Output](r, path, body)
+}
+
+func httpPut[E core.ErrorHandler](r *http.Request, _ string, body []Entry) (http.Header, *core.Status) {
 	if body == nil {
 		content, status := json2.New[[]Entry](r.Body, r.Header)
 		if !status.OK() {
@@ -66,4 +80,8 @@ func Put[E core.ErrorHandler](r *http.Request, _ string, body []Entry) (http.Hea
 		body = content
 	}
 	return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
+}
+
+func AddressQuery(ctx context.Context, h http.Header, values url.Values) ([]Entry, *core.Status) {
+	return get[core.Log](ctx, h, values)
 }
