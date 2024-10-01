@@ -40,7 +40,7 @@ func addressGet(r *http.Request, p *uri.Parsed) (resp *http.Response, status *co
 
 	switch p.Version {
 	case ver1, "":
-		entries, h2, status = address1.Get[core.Log](r, p.Path)
+		entries, h2, status = address1.Get(r, p.Path)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
 	}

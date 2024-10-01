@@ -16,43 +16,45 @@ const (
 	stateKey    = "state"
 )
 
-func testOverride(h http.Header) http.Header {
+func testOverride(h http.Header, values url.Values) http.Header {
 	if h != nil && h.Get(uri.XContentLocationResolver) != "" {
 		return h
 	}
-	return httpx.SetHeader(h, uri.XContentLocationResolver, testrsc.Addr1GetRespTest)
+	path := uri.BuildPath("", StoragePath, values)
+	return uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 }
 
-func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
+func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
 	var e E
 
+	h2 = httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeText)
 	if values == nil {
-		return nil, core.StatusNotFound()
+		return nil, h2, core.StatusNotFound()
 	}
 	// Test only
-	h = testOverride(h)
+	h = testOverride(h, values)
 
 	u := resolver.Url(StorageHost, "", StoragePath, values, h)
 	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 	if err != nil {
-		return nil, core.NewStatusError(core.StatusInvalidArgument, err)
+		return nil, h2, core.NewStatusError(core.StatusInvalidArgument, err)
 	}
 	resp, status1 := httpx.Exchange(req)
 	if !status1.OK() {
 		e.Handle(status1.WithRequestId(h))
-		return nil, status1
+		return nil, h2, status1
 	}
 	entries, status = json.New[[]Entry](resp, h)
 	if !status.OK() {
 		e.Handle(status.WithRequestId(h))
-		return nil, status
+		return nil, h2, status
 	}
+	h2 = httpx.SetHeader(h2, httpx.ContentType, httpx.ContentTypeJson)
 	if len(values) > 0 {
 		entries = filter(entries, values)
 	}
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
-	} else {
 	}
 	return
 }

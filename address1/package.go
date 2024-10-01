@@ -25,7 +25,7 @@ var (
 )
 
 // Get - address1 resource GET
-func Get[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.Header, *core.Status) {
+func Get(r *http.Request, path string) ([]byte, http.Header, *core.Status) {
 	if r == nil {
 		status := core.NewStatusError(core.StatusInvalidArgument, errors.New("error: http.Request is"))
 		return nil, nil, status
@@ -39,10 +39,9 @@ func Get[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.Header
 func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.Header, *core.Status) {
 	var e E
 
-	h2 := httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeText)
 	switch path {
 	case addrPath:
-		t, status := get[E](r.Context(), r.Header, r.URL.Query())
+		t, h2, status := get[E](r.Context(), r.Header, r.URL.Query())
 		if !status.OK() {
 			return nil, h2, status
 		}
@@ -54,7 +53,7 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 		return buf, httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeJson), status1
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New("error: resource is not percentile or status code"))
-		return nil, h2, status
+		return nil, httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeText), status
 	}
 }
 
@@ -83,5 +82,6 @@ func httpPut[E core.ErrorHandler](r *http.Request, _ string, body []Entry) (http
 }
 
 func AddressQuery(ctx context.Context, h http.Header, values url.Values) ([]Entry, *core.Status) {
-	return get[core.Log](ctx, h, values)
+	e, _, status := get[core.Log](ctx, h, values)
+	return e, status
 }

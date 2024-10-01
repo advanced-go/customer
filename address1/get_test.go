@@ -14,7 +14,7 @@ func ExampleGet_Customer() {
 	path := uri.BuildPath("", StoragePath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
-	entries, status := get[core.Output](nil, h, values)
+	entries, _, status := get[core.Output](nil, h, values)
 	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
 
 	//Output:
@@ -28,7 +28,7 @@ func ExampleGet_Customer_All() {
 	path := uri.BuildPath("", StoragePath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
-	entries, status := get[core.Output](nil, h, values)
+	entries, _, status := get[core.Output](nil, h, values)
 	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
 
 	//Output:
@@ -42,7 +42,7 @@ func ExampleGet_State() {
 	path := uri.BuildPath("", StoragePath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
-	entries, status := get[core.Output](nil, h, values)
+	entries, _, status := get[core.Output](nil, h, values)
 	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
 
 	//Output:
