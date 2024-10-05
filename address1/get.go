@@ -17,7 +17,7 @@ const (
 )
 
 func testOverride(h http.Header, values url.Values) http.Header {
-	if h != nil && h.Get(uri.XContentLocationResolver) != "" {
+	if h != nil && h.Get(uri.XResolver) != "" {
 		return h
 	}
 	path := uri.BuildPath("", StoragePath, values)
