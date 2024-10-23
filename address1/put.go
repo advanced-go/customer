@@ -3,8 +3,8 @@ package address1
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/httpx"
 	"net/http"
 )
 

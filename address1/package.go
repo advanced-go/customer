@@ -3,9 +3,9 @@ package address1
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
-	json2 "github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/httpx"
+	json2 "github.com/advanced-go/common/jsonx"
 	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 	"net/url"

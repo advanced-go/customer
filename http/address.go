@@ -3,11 +3,11 @@ package http
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/httpx"
+	"github.com/advanced-go/common/uri"
 	"github.com/advanced-go/customer/address1"
 	"github.com/advanced-go/customer/module"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
-	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 )
 

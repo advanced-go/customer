@@ -2,11 +2,11 @@ package address1
 
 import (
 	"context"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/httpx"
+	"github.com/advanced-go/common/jsonx"
+	"github.com/advanced-go/common/uri"
 	"github.com/advanced-go/customer/testrsc"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
-	"github.com/advanced-go/stdlib/json"
-	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 	"net/url"
 )
@@ -17,11 +17,11 @@ const (
 )
 
 func testOverride(h http.Header, values url.Values) http.Header {
-	if h != nil && h.Get(uri.XResolver) != "" {
+	if h != nil && h.Get(uri.XContentResolver) != "" {
 		return h
 	}
 	path := uri.BuildPath("", StoragePath, values)
-	return uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
+	return uri.AddResolverEntry(nil, path, testrsc.Addr1GetRespTest)
 }
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
@@ -44,7 +44,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 		e.Handle(status1.WithRequestId(h))
 		return nil, h2, status1
 	}
-	entries, status = json.New[[]Entry](resp, h)
+	entries, status = jsonx.New[[]Entry](resp, h)
 	if !status.OK() {
 		e.Handle(status.WithRequestId(h))
 		return nil, h2, status
