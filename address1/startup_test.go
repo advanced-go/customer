@@ -2,7 +2,7 @@ package address1
 
 import (
 	"fmt"
-	"github.com/advanced-go/stdlib/host"
+	"github.com/advanced-go/common/host"
 )
 
 func ExampleStartupPing() {

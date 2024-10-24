@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/advanced-go/common/core"
 	"github.com/advanced-go/common/httpx"
-	json2 "github.com/advanced-go/common/jsonx"
-	"github.com/advanced-go/stdlib/uri"
+	"github.com/advanced-go/common/jsonx"
+	"github.com/advanced-go/common/uri"
 	"net/http"
 	"net/url"
 )
@@ -45,7 +45,7 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 		if !status.OK() {
 			return nil, h2, status
 		}
-		buf, status1 := json2.Marshal(t)
+		buf, status1 := jsonx.Marshal(t)
 		if !status1.OK() {
 			e.Handle(status1)
 			return nil, h2, status1
@@ -70,7 +70,7 @@ func Put(r *http.Request, path string, body []Entry) (http.Header, *core.Status)
 
 func httpPut[E core.ErrorHandler](r *http.Request, _ string, body []Entry) (http.Header, *core.Status) {
 	if body == nil {
-		content, status := json2.New[[]Entry](r.Body, r.Header)
+		content, status := jsonx.New[[]Entry](r.Body, r.Header)
 		if !status.OK() {
 			var e E
 			e.Handle(status.WithRequestId(r.Header))

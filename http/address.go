@@ -16,9 +16,9 @@ func addressExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.Stat
 	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 
 	if p == nil {
-		p1, status := httpx.ValidateURL(r.URL, module.Authority)
-		if !status.OK() {
-			return httpx.NewResponse(status.HttpCode(), h2, status.Err)
+		p1, err := uri.ValidateURL(r.URL, module.Authority)
+		if err != nil {
+			return httpx.NewResponse(http.StatusBadRequest, h2, err)
 		}
 		p = p1
 	}
