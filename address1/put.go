@@ -24,7 +24,6 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 	_, status = httpx.Exchange(req)
 	if !status.OK() {
 		e.Handle(status.WithRequestId(h))
-
 	}
 	return
 }

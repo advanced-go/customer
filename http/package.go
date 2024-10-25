@@ -22,8 +22,6 @@ const (
 	healthReadinessPath = "health/readiness"
 	versionPath         = "version"
 	authorityPath       = "authority"
-	//AuthorityRootPath   = "/authority"
-
 )
 
 var (

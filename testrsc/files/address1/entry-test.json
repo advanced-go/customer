@@ -1,17 +1,17 @@
 [
   {
     "customer-id": "C001",
-    "address-1":"1514 Cedar Ridge Road",
-    "city":"Vinton",
+    "address-1":"456 Elm Street",
+    "city":"Cedar Rapids",
     "state":"IA",
     "postal-code":"52349",
     "email":"before-email@hotmail.com"
    },
   {
     "customer-id": "C002",
-    "address-1":"5494 Lakeview Drive",
-    "city":"Clear Lake",
-    "state":"IA",
+    "address-1":"316 Lynn Avenue",
+    "city":"Ames",
+    "state":"MN",
     "postal-code":"50428",
     "email":"before-email2@yahoo.com"
   },
