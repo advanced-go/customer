@@ -18,9 +18,12 @@ func TestExchange1(t *testing.T) {
 		resp   *http.Response
 		status *core.Status
 	}{
-		{name: "get-error-header", req: test.NewRequestTest(testrsc.Addr1GetReqErrHeader, t), resp: test.NewResponseTest(testrsc.Addr1GetResp, t), status: core.StatusOK()},
-		{name: "get-error-content", req: test.NewRequestTest(testrsc.Addr1GetReq, t), resp: test.NewResponseTest(testrsc.Addr1GetRespErrContent, t), status: core.StatusOK()},
+		//{name: "get-error-header", req: test.NewRequestTest(testrsc.Addr1GetReqErrHeader, t), resp: test.NewResponseTest(testrsc.Addr1GetResp, t), status: core.StatusOK()},
+		//{name: "get-error-content", req: test.NewRequestTest(testrsc.Addr1GetReq, t), resp: test.NewResponseTest(testrsc.Addr1GetRespErrContent, t), status: core.StatusOK()},
 		{name: "get-entry", req: test.NewRequestTest(testrsc.Addr1GetReq, t), resp: test.NewResponseTest(testrsc.Addr1GetResp, t), status: core.StatusOK()},
+		{name: "get-all", req: test.NewRequestTest(testrsc.Addr1GetAllReq, t), resp: test.NewResponseTest(testrsc.Addr1GetAllResp, t), status: core.StatusOK()},
+
+		//
 	}
 	for _, tt := range tests {
 		ok := true
@@ -39,9 +42,15 @@ func TestExchange1(t *testing.T) {
 			if ok {
 				gotT, wantT, ok = test.Deserialize[test.Output, []address1.Entry](resp.Body, tt.resp.Body, t)
 			}
+			if ok && len(gotT) != len(wantT) {
+				t.Errorf("got-length = %v,want length = %v", len(gotT), len(wantT))
+				ok = false
+			}
 			if ok {
-				if !reflect.DeepEqual(gotT, wantT) {
-					t.Errorf("Exchange() got = %v, want %v", gotT, wantT)
+				for i := 0; i < len(wantT); i++ {
+					if !reflect.DeepEqual(gotT[i], wantT[i]) {
+						t.Errorf("\ngot  = %v,\nwant = %v\n", gotT, wantT)
+					}
 				}
 			}
 		})

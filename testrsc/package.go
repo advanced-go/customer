@@ -8,8 +8,11 @@ const (
 	Addr1Entry     = Addr1BasePath + "/entry.json"
 	Addr1EntryTest = Addr1BasePath + "/entry-test.json"
 
-	Addr1GetReq      = Addr1BasePath + "/get-req.txt"
-	Addr1GetResp     = Addr1BasePath + "/get-resp.txt"
+	Addr1GetReq     = Addr1BasePath + "/get-req.txt"
+	Addr1GetResp    = Addr1BasePath + "/get-resp.txt"
+	Addr1GetAllReq  = Addr1BasePath + "/get-all-req.txt"
+	Addr1GetAllResp = Addr1BasePath + "/get-all-resp.txt"
+
 	Addr1GetRespTest = Addr1BasePath + "/get-resp-test.txt"
 
 	Addr1GetReqErrHeader   = Addr1BasePath + "/get-req-error-header.txt"
