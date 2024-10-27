@@ -43,13 +43,14 @@ func TestExchange1(t *testing.T) {
 				gotT, wantT, ok = test.Deserialize[test.Output, []address1.Entry](resp.Body, tt.resp.Body, t)
 			}
 			if ok && len(gotT) != len(wantT) {
-				t.Errorf("got-length = %v,want length = %v", len(gotT), len(wantT))
+				t.Errorf("got length = %v,want length = %v", len(gotT), len(wantT))
 				ok = false
 			}
 			if ok {
 				for i := 0; i < len(wantT); i++ {
 					if !reflect.DeepEqual(gotT[i], wantT[i]) {
-						t.Errorf("\ngot  = %v,\nwant = %v\n", gotT, wantT)
+						t.Errorf("\ngot content = %v,\nwant content = %v\n", gotT[i], wantT[i])
+						ok = false
 					}
 				}
 			}
